@@ -7,22 +7,28 @@ var bullet_list = [];
 
 Sprite Class -- Contains update, draw, etc.
 
-var Sprite = function(posX, posY, sizeX, sizeY, movement) {
+*/
+
+var Sprite = function(posX, posY, sizeX, sizeY, movement, shape) {
   this.posX = posX || 0;
   this.posY = posY || 0;
   this.movement = movement || [0, 0];
+  this.shape = shape || false;
+
   this.update = function() {
     this.posX += this.movement[0];
     this.posY += this.movement[1];
     this.draw();
   }
 
-  this.draw = function(shape) {
-    shape(posX, posY, sizeX, sizeY);
+  this.draw = function() {
+    this.shape(posX, posY, sizeX, sizeY);
   }
+
+
 }
 
-*/
+var sprite = new Sprite(100, 100, 25, 25, [0, 0], rect);
 
 /*
 
@@ -78,6 +84,12 @@ var Bullet = function(keyCode, origX, origY) {
   this.x = origX; this.y = origY;
   this.speed = 15; this.movements = [];
 
+  this.update = function() {
+    this.x += this.movements[0];
+    this.y += this.movements[1];
+    rect(this.x, this.y, 10, 10);
+  }
+
   this.handle_direction = function(keyCode) {
     change_x = 0;
     change_y = 0;
@@ -95,8 +107,8 @@ var Bullet = function(keyCode, origX, origY) {
 
 var Player = function() {
   this.update = function() {
-    this.x += this.change_x;
-    this.y += this.change_y;
+    this.x += this.movements[0];
+    this.y += this.movements[1];
 
     // Handle out of bounds
     if(this.x > displayWidth + 25) {
@@ -111,7 +123,7 @@ var Player = function() {
     };
     // **************************
 
-    rect(this.x, this.y, 25, 25);
+    this.image = rect(this.x, this.y, 25, 25);
   };
 
   this.handle_movements = function(keyCode, pressed) {
@@ -144,6 +156,7 @@ function setup() {
 
 function draw() {
   clear();
+  sprite.update();
   game_control.update();
 }
 
